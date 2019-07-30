@@ -399,7 +399,7 @@ Plot3D <- function(x, y = NULL, z = NULL, color = par("col"), pch = NULL,
 #'@export
 #'@importFrom plotly plot_ly add_markers layout
 
-PlotPCA3DScoreImg <- function(mSetObj=NA, imgName, format="png", dpi=72, width=NA, inx1, inx2, inx3, angl){
+PlotPCA3DScoreImg <- function(mSetObj=NA, imgName, format="png", dpi=72, width=NA, inx1, inx2, inx3, angl, box=T){
   
   mSetObj <- .get.mSet(mSetObj);
   
@@ -431,7 +431,7 @@ PlotPCA3DScoreImg <- function(mSetObj=NA, imgName, format="png", dpi=72, width=N
     legend.nm <- unique(as.character(mSetObj$dataSet$cls));
     uniq.cols <- unique(cols);
     Plot3D(mSetObj$analSet$pca$x[, inx1], mSetObj$analSet$pca$x[, inx2], mSetObj$analSet$pca$x[, inx3], xlab= xlabel, ylab=ylabel,
-           zlab=zlabel, angle =angl, color=cols, pch=pchs, box=F);
+           zlab=zlabel, angle =angl, color=cols, pch=pchs, box=box);
     legend("topleft", legend =legend.nm, pch=uniq.pchs, col=uniq.cols);
     dev.off();
     
@@ -496,7 +496,7 @@ PlotPCA3DScoreImg <- function(mSetObj=NA, imgName, format="png", dpi=72, width=N
 #'License: GNU GPL (>= 2)
 #'@export
 #'@importFrom plotly plot_ly add_markers layout
-PlotSPLS3DScoreImg<-function(mSetObj=NA, imgName, format="png", dpi=72, width=NA, inx1, inx2, inx3, angl){
+PlotSPLS3DScoreImg<-function(mSetObj=NA, imgName, format="png", dpi=72, width=NA, inx1, inx2, inx3, angl, box=TRUE){
   
   mSetObj <- .get.mSet(mSetObj);
   
@@ -539,7 +539,7 @@ PlotSPLS3DScoreImg<-function(mSetObj=NA, imgName, format="png", dpi=72, width=NA
   pchs <- as.numeric(mSetObj$dataSet$cls)+1;
   uniq.pchs <- unique(pchs);
   Plot3D(coords[,inx1], coords[,inx2], coords[,inx3], xlab= xlabel, ylab=ylabel,
-         zlab=zlabel, angle = angl, color=cols, pch=pchs, box=F);
+         zlab=zlabel, angle = angl, color=cols, pch=pchs, box=box);
   legend("topleft", legend = legend.nm, pch=uniq.pchs, col=uniq.cols);
   dev.off();
   
@@ -673,7 +673,7 @@ PlotSPLS3DScoreImg<-function(mSetObj=NA, imgName, format="png", dpi=72, width=NA
 #'@export
 #'@importFrom plotly plot_ly add_markers layout
 
-PlotPLS3DScoreImg<-function(mSetObj=NA, imgName, format="png", dpi=72, width=NA, inx1, inx2, inx3, angl){
+PlotPLS3DScoreImg<-function(mSetObj=NA, imgName, format="png", dpi=72, width=NA, inx1, inx2, inx3, angl, box=TRUE){
   
   mSetObj <- .get.mSet(mSetObj);
   
@@ -702,7 +702,7 @@ PlotPLS3DScoreImg<-function(mSetObj=NA, imgName, format="png", dpi=72, width=NA,
   pchs <- as.numeric(mSetObj$dataSet$cls)+1;
   uniq.pchs <- unique(pchs);
   Plot3D(mSetObj$analSet$plsr$score[,inx1], mSetObj$analSet$plsr$score[,inx2], mSetObj$analSet$plsr$score[,inx3], xlab= xlabel, ylab=ylabel,
-         zlab=zlabel, angle =angl, color=cols, pch=pchs, box=F);
+         zlab=zlabel, angle =angl, color=cols, pch=pchs, box=box);
   legend("topleft", legend = legend.nm, pch=uniq.pchs, col=uniq.cols);
   dev.off();
   

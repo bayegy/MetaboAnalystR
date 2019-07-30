@@ -5,6 +5,30 @@
 ###License: GNU GPL (>= 2)
 
 
+#'util
+choose<-function(condition,choice1,choice2){
+  if(condition){
+    return(choice1)
+  }else{
+    return(choice2)
+  }
+}
+
+#'util
+or<-function(choice1,choice2){
+  if(length(choice1)==1){
+      if(is.na(choice1)|choice1==FALSE){
+        return(choice2)
+      }  
+  }else{
+      if(length(choice1)==0){
+        return(choice2)
+      }
+  }
+  return(choice1)
+}
+
+
 #'Given a data with duplicates, remove duplicates
 #'@description Dups is the one with duplicates
 #'@param data Input data to remove duplicates
@@ -455,13 +479,17 @@ CalculatePairwiseDiff <- function(mat){
 #'@param mSetObj Input the name of the created mSetObj (see InitDataObjects)
 #'@export
 # col.vec should already been created
-UpdateGraphSettings <- function(mSetObj=NA, colVec, shapeVec){
+UpdateGraphSettings <- function(mSetObj=NA, colVec=NA, shapeVec=NA){
   mSetObj <- .get.mSet(mSetObj);
   grpnms <- GetGroupNames(mSetObj);
-  names(colVec) <- grpnms;
-  names(shapeVec) <- grpnms;
-  colVec <<- colVec;
-  shapeVec <<- shapeVec;
+  if(!any(is.na(colVec))){
+    names(colVec) <- grpnms;
+    colVec <<- colVec;
+  }
+  if(!any(is.na(shapeVec))){
+    names(shapeVec) <- grpnms;
+    shapeVec <<- shapeVec;
+  }
 }
 
 GetShapeSchema <- function(mSetObj=NA, show.name, grey.scale){

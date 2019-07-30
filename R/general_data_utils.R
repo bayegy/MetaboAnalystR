@@ -140,7 +140,8 @@ Read.TextData <- function(mSetObj=NA, filePath, format="rowu", lbl.type="disc"){
   mSetObj$dataSet$cls.type <- lbl.type;
   mSetObj$dataSet$format <- format;
   
-  dat <- .readDataTable(filePath);
+  #Allow pass data.frame
+  dat <- choose(class(filePath)=="character",.readDataTable(filePath), filePath);
   
   if(class(dat) == "try-error" || ncol(dat) == 1){
     AddErrMsg("Data format error. Failed to read in the data!");

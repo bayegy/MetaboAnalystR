@@ -1801,18 +1801,20 @@ PlotOPLS.Permutation<-function(mSetObj=NA, imgName, format="png", dpi=72, width=
 #'License: GNU GPL (>= 2)
 #'@export
 
-SPLSR.Anal <- function(mSetObj=NA, comp.num, var.num, compVarOpt, validOpt="Mfold"){
+SPLSR.Anal <- function(mSetObj=NA, comp.var.nums=c(50, 50, 50), validOpt="Mfold"){
   
-  if(compVarOpt == "same"){
-    comp.var.nums <- rep(var.num, comp.num);
-  }else{
-    if(exists("comp.var.nums") && all(comp.var.nums > 0)){
-      comp.var.nums <- ceiling(comp.var.nums);
-    }else{
-      msg <- c("All values need to be positive integers!");
-      return(0);
-    }
-  }
+  # if(compVarOpt == "same"){
+  #   comp.var.nums <- rep(var.num, comp.num);
+  # }else{
+  #   if(exists("comp.var.nums") && all(comp.var.nums > 0)){
+  #     comp.var.nums <- ceiling(comp.var.nums);
+  #   }else{
+  #     msg <- c("All values need to be positive integers!");
+  #     return(0);
+  #   }
+  # }
+
+  comp.num<-length(comp.var.nums)
 
   mSetObj <- .get.mSet(mSetObj);  
   

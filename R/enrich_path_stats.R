@@ -65,9 +65,9 @@ CalculateOraScore <- function(mSetObj=NA, nodeImp, method){
   }
   
   # prepare for the result table
-  res.mat<-matrix(0, nrow=set.size, ncol=8);
+  res.mat<-matrix(0, nrow=set.size, ncol=10);
   rownames(res.mat)<-names(current.mset);
-  colnames(res.mat)<-c("Total", "Expected", "Hits", "Raw p", "-log(p)", "Holm adjust", "FDR", "Impact");
+  colnames(res.mat)<-c("Total", "Expected", "Hits", "Raw p", "-log(p)", "Holm adjust", "FDR", "Impact", "Fold Enrichment", "-log10(p)");
   
   if(nodeImp == "rbc"){
     imp.list <- metpa$rbc;
@@ -97,7 +97,12 @@ CalculateOraScore <- function(mSetObj=NA, nodeImp, method){
   res.mat[,7] <- p.adjust(res.mat[,4], "fdr");
   # calculate the sum of importance
   res.mat[,8] <- mapply(function(x, y){sum(x[y])}, imp.list, hits);
-  
+
+  # add needed information, Bayegy
+  res.mat[,9] <- res.mat[,3]/res.mat[,2]
+  res.mat[,10] <- -log(res.mat[,4], base=10);
+  # res.mat <- signif(res.mat, 5)
+
   res.mat <- res.mat[hit.num>0, , drop=FALSE];
   res.mat <- res.mat[!is.na(res.mat[,8]), , drop=FALSE];
   
@@ -107,14 +112,19 @@ CalculateOraScore <- function(mSetObj=NA, nodeImp, method){
   }
   
   mSetObj$analSet$ora.mat <- signif(res.mat,5);
+  # mSetObj$analSet$ora.mat <- res.mat;
   mSetObj$analSet$ora.hits <- hits;
   mSetObj$analSet$node.imp <- nodeImp;
   
   .set.mSet(mSetObj)
-  
+
+  # modify output, Bayegy
   save.mat <- mSetObj$analSet$ora.mat;
-  rownames(save.mat) <- GetORA.pathNames(mSetObj);
-  write.csv(save.mat, file="pathway_results.csv");
+  rownames(mSetObj$analSet$ora.mat) <- GetORA.pathNames(mSetObj);
+  save.mat <- data.frame(save.mat, Description=rownames(mSetObj$analSet$ora.mat), check.names=FALSE);
+  mSetObj$analSet$ora.df <- save.mat;
+  # rownames(save.mat) <- GetORA.pathNames(mSetObj);
+  write.csv(save.mat, file="pathway_enrichment_and_topo_results.csv");
   
   if(.on.public.web){
     return(1);

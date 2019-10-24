@@ -346,13 +346,19 @@ PerformIntegPathwayAnalysis <- function(mSetObj=NA, topo="dc", enrich="hyper", l
   resTable <- signif(res.mat[ord.inx,,drop=FALSE],5);
 
   # now save to csv
-  write.csv(resTable, file="MetaboAnalyst_result_pathway.csv", row.names=TRUE);
+  
   
   # for internal use, switch to pathway IDs (name containing special characters)
-  rownames(resTable) <- inmexpa$path.ids[rownames(resTable)];
+  resTable1 <- data.frame(resTable, Pathway_ID = inmexpa$path.ids[rownames(resTable)], check.names = FALSE)
+  resTable1[, 5] <- -log(resTable1[, 4], base=10)
+  colnames(resTable1)[5] <- "-log10(p)"
   
+  rownames(resTable) <- inmexpa$path.ids[rownames(resTable)];
+   
+  write.csv(resTable1, file="topo_result_pathway.csv", row.names=TRUE);
   # store results from individual analysis
   mSetObj$dataSet$path.mat <- resTable;
+  mSetObj$dataSet$path.df <- resTable1;
   mSetObj$dataSet$path.hits <- hits.path;
   mSetObj$dataSet$pathinteg.impMat <- impMat; 
 

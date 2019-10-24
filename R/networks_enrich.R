@@ -139,7 +139,9 @@ QueryPhenoSQLite <- function(table.nm, genes, cmpds, min.score){
     load_rsqlite()
     pheno.db <- dbConnect(SQLite(), "../../libs/network/MetPriCNet.sqlite");
   }else{
-    download.file("https://www.metaboanalyst.ca/resources/libs/network/MetPriCNet.sqlite", "MetPriCNet.sqlite")
+    if(!file.exists("MetPriCNet.sqlite")){
+      download.file("https://www.metaboanalyst.ca/resources/libs/network/MetPriCNet.sqlite", "MetPriCNet.sqlite")
+    }
     pheno.db <- dbConnect(SQLite(), "MetPriCNet.sqlite");
   }
   

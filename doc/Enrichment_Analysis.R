@@ -66,8 +66,10 @@ mSet<-PlotORA(mSet, "ora_0_", "bar", "png", 72, width=NA)
 # Create mSetObj
 mSet<-InitDataObjects("conc", "msetqea", FALSE)
 
+
+df<-read.csv("human_cachexia.csv", check.names = F)
 # Read in data table
-mSet<-Read.TextData(mSet, "http://www.metaboanalyst.ca/MetaboAnalyst/resources/data/human_cachexia.csv", "rowu", "disc");
+mSet<-Read.TextData(mSet, df, "rowu", "disc");
 
 # Perform cross-referencing of compound names
 mSet<-CrossReferencing(mSet, "name");
@@ -102,5 +104,4 @@ mSet<-CalculateGlobalTestScore(mSet)
 
 # Plot the QEA
 mSet<-PlotQEA.Overview(mSet, "qea_0_", "bar", "png", 72, width=NA)
-
 

@@ -1,11 +1,15 @@
 ## ------------------------------------------------------------------------
 library(MetaboAnalystR)
+setwd("/home/cheng/pipelines/Metabonome/test_biomarker")
 
-# Create objects for storing processed data from biomarker analysis 
+# Create objects for storing processed data from biomarker analysis
 mSet<-InitDataObjects("conc", "roc", FALSE)
 
 # Read in data and fill in the dataSet list
-mSet<-Read.TextData(mSet, "http://www.metaboanalyst.ca/MetaboAnalyst/resources/data/plasma_nmr_new.csv", "rowu", "disc")
+mSet<-Read.TextData(mSet, "plasma_nmr_new.csv", "rowu", "disc")
+
+
+SVM("plasma_nmr_new.csv", "test_svm")
 
 # Sanity check, replace missing values, check if the sample size is too small
 mSet<-SanityCheckData(mSet)
@@ -67,13 +71,15 @@ mSet<-PerformCV.explore(mSet, cls.method = "svm", rank.method = "svm", lvNum = 2
 mSet<-PlotROC(mSet, imgName = "ROC_all_models", format = "png", dpi = 300, mdl.inx= 0, avg.method = "threshold", show.conf = 0, show.holdout = 0, focus="fpr", cutoff=0.5)
 
 # Plot predicted class probabilities for each sample for a selected model, not showing labels of wrongly classified samples
-mSet<-PlotProbView(mSet, imgName = "multi_roc_prob", format = "png", dpi = 300, mdl.inx = -1, show = 0, showPred = 0)
+mSet<-PlotProbView(mSet, imgName = "multi_roc_prob", format = "png", dpi = 300, mdl.inx = -1, show = 1, showPred = 0)
 
 # Plot the predictive accuracy of models with increasing number of features
 mSet<-PlotAccuracy(mSet, imgName = "multi_roc_accuracy", format = "png", dpi = 300)
 
 # Plot the most important features of a selected model ranked from most to least important
 mSet<-PlotImpVars(mSet, imgName = "multi_roc_impvar", format="png", dpi=300, mdl.inx = -1, measure="freq", feat.num=15)
+
+
 
 
 ## ---- eval=FALSE---------------------------------------------------------

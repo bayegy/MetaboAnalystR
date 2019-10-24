@@ -97,7 +97,11 @@ PlotMetpaPath<-function(mSetObj=NA, pathName,width=NA, height=NA, format="png", 
       }
     }
   }
-  
+    
+    #Change the node names, Bayegy
+    KEGGgraph::nodes(g) <- names(KEGGgraph::nodes(g))
+    names(fillcolvec) <- KEGGgraph::nodes(g)
+
     if(is.null(dpi)){
         if(is.null(mSetObj$analSet$node.imp) || mSetObj$analSet$node.imp == "rbc"){
             impvec <- metpa$rbc[[path.id]];

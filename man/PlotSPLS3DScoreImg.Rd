@@ -5,10 +5,7 @@
 \title{Plot sPLS-DA 3D score plot}
 \usage{
 PlotSPLS3DScoreImg(mSetObj = NA, imgName, format = "png", dpi = 72,
-  width = NA, inx1, inx2, inx3, angl)
-
-PlotSPLS3DScoreImg(mSetObj = NA, imgName, format = "png", dpi = 72,
-  width = NA, inx1, inx2, inx3, angl)
+  width = NA, inx1, inx2, inx3, angl, box=TRUE)
 }
 \arguments{
 \item{mSetObj}{Input name of the created mSet Object}
@@ -50,6 +47,8 @@ The second default is width = 0, where the width is 7.2. Otherwise users can inp
 \item{inx3}{Numeric, indicate the number of the principal component for the z-axis of the loading plot.}
 
 \item{angl}{Input the angle}
+
+\item{box}{Plot box or not. T or F}
 }
 \description{
 This function creates two 3D sPLS-DA score plots, the first is static for Analysis Report purposes, as well as 

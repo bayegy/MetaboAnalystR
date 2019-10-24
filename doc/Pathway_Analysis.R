@@ -1,3 +1,11 @@
+
+dir.create("pathway_duang")
+setwd("pathway_duang")
+
+rm(list = ls())
+
+load("hsa.rda")
+
 ## ------------------------------------------------------------------------
 # Create vector consisting of compounds for enrichment analysis 
 tmp.vec <- c("Acetoacetic acid", "Beta-Alanine", "Creatine", "Dimethylglycine", "Fumaric acid", "Glycine", "Homocysteine", "L-Cysteine", "L-Isolucine", "L-Phenylalanine", "L-Serine", "L-Threonine", "L-Tyrosine", "L-Valine", "Phenylpyruvic acid", "Propionic acid", "Pyruvic acid", "Sarcosine")
@@ -36,5 +44,5 @@ mSet<-CalculateOraScore(mSet, "rbc", "hyperg")
 mSet<-PlotPathSummary(mSet, "path_view_0_", "png", 72, width=NA)
 
 # Plot a specific metabolic pathway, in this case "Glycine, serine and threonine metabolism"
-mSet<-PlotKEGGPath(mSet, "Glycine, serine and threonine metabolism",528, 480, "png", NULL)
+mSet<-PlotKEGGPath(mSet, "Glycine, serine and threonine metabolism", 528, 480, "png", NULL)
 

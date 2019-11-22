@@ -294,18 +294,30 @@ Ttests.Anal <- function(mSetObj=NA, nonpar=F, threshp=0.05, paired=FALSE, equal.
   
    mSetObj <- .get.mSet(mSetObj);
 
+   cls <- mSetObj$dataSet$cls
+   num_groups <- length(unique(cls))
+
+
    # check to see if already done by microservice
-   if(.on.public.web & !nonpar & RequireFastT(mSetObj)){
-        res <- readRDS("fastt_out.rds");
-        t.stat <- res$t.stats;
-        p.value <- res$p.vals;
-   }else{
-        res <- GetTtestRes(mSetObj, paired, equal.var, nonpar);
-        t.stat <- res[,1];
-        p.value <- res[,2];
-   }
-  
-   names(t.stat) <- names(p.value) <- colnames(mSetObj$dataSet$norm);
+    if(num_groups==2){
+     if(.on.public.web & !nonpar & RequireFastT(mSetObj)){
+          res <- readRDS("fastt_out.rds");
+          t.stat <- res$t.stats;
+          p.value <- res$p.vals;
+     }else{
+          res <- GetTtestRes(mSetObj, paired, equal.var, nonpar);
+          t.stat <- res[,1];
+          p.value <- res[,2];
+     }
+     names(t.stat) <- names(p.value) <- colnames(mSetObj$dataSet$norm);    
+    }else{
+      res <- ANOVA.Anal(mSetObj=mSetObj, nonpar=nonpar, thresh=threshp, post.hoc="fisher", all_results=all_results);
+      res <- res$analSet$aov$sig.mat
+      t.stat <- res[,1];
+      p.value <- res[,2]; 
+      names(t.stat) <- names(p.value) <- rownames(res)   
+    }
+
   
    p.log <- -log10(p.value);
    fdr.p <- p.adjust(p.value, "fdr");
@@ -317,11 +329,19 @@ Ttests.Anal <- function(mSetObj=NA, nonpar=F, threshp=0.05, paired=FALSE, equal.
      if(nonpar){
        tt.nm = "Wilcoxon Rank Test";  
        file.nm <- "wilcox_rank_all.csv"
-       colnames(all.mat) <- c("V", "p.value", "-log10(p)", "FDR");
+       if(num_groups==2){
+          colnames(all.mat) <- c("V", "p.value", "-log10(p)", "FDR");
+        }else{
+          colnames(all.mat) <- c("chi.squared", "p.value", "-log10(p)", "FDR");
+        }
      }else{
        tt.nm = "T-Tests";
        file.nm <- "t_test_all.csv";
-       colnames(all.mat) <- c("t.stat", "p.value", "-log10(p)", "FDR");
+       if(num_groups==2){
+         colnames(all.mat) <- c("t.stat", "p.value", "-log10(p)", "FDR");
+        }else{
+         colnames(all.mat) <- c("f.stat", "p.value", "-log10(p)", "FDR");
+        }
      }
      write.csv(all.mat, file=file.nm);
    }
@@ -347,11 +367,20 @@ Ttests.Anal <- function(mSetObj=NA, nonpar=F, threshp=0.05, paired=FALSE, equal.
     if(nonpar){
       tt.nm = "Wilcoxon Rank Test";  
       file.nm <- "wilcox_rank.csv"
-      colnames(sig.mat) <- c("V", "p.value", "-log10(p)", "FDR");
+      if(num_groups==2){
+          colnames(sig.mat) <- c("V", "p.value", "-log10(p)", "FDR");
+        }else{
+          colnames(sig.mat) <- c("chi.squared", "p.value", "-log10(p)", "FDR");
+        }
+      
     }else{
       tt.nm = "T-Tests";
       file.nm <- "t_test.csv";
-      colnames(sig.mat) <- c("t.stat", "p.value", "-log10(p)", "FDR");
+      if(num_groups==2){
+          colnames(sig.mat) <- c("t.stat", "p.value", "-log10(p)", "FDR");
+        }else{
+          colnames(sig.mat) <- c("f.stat", "p.value", "-log10(p)", "FDR");
+        }
     }
     write.csv(sig.mat, file=file.nm);
     

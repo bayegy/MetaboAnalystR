@@ -1330,13 +1330,20 @@ PlotPLS.Permutation <- function(mSetObj=NA, imgName, format="png", dpi=72, width
   
   Cairo::Cairo(file = imgName, unit="in", dpi=dpi, width=w, height=h, type=format, bg="white");
   par(mar=c(5,5,2,4));
-  hst <- hist(bw.vec, breaks = "FD", freq=T,
-              ylab="Frequency", xlab= 'Permutation test statistics', col="lightblue", main="");
+  bw.hist <- hist(bw.vec, plot=FALSE)
+  breaks <- bw.hist$breaks
+  if(length(breaks)==2){
+    breaks <- range(bw.vec)
+    if(breaks[2]==breaks[1]){
+      breaks[2] <- breaks[2] + 0.1
+    }
+  }
+  hst <- hist(bw.vec, breaks=breaks, freq=T, ylab="Frequency", xlab= 'Permutation test statistics', col="lightblue", main="");
   
   # add the indicator using original label
   h <- max(hst$counts)
   arrows(bw.vec[1], h/5, bw.vec[1], 0, col="red", lwd=2);
-  text(bw.vec[1], h/3.5, paste('Observed \n statistic \n', mSetObj$analSet$plsda$permut.p), xpd=T);
+  text(bw.vec[1], h/3.5, paste('Observed Accuracy:', format(bw.vec[1], digits=2), "\n", mSetObj$analSet$plsda$permut.p), xpd=T);
   dev.off();
   return(.set.mSet(mSetObj));
 }
@@ -1718,7 +1725,7 @@ OPLSDA.Permut<-function(mSetObj=NA, num=100){
 #'License: GNU GPL (>= 2)
 #'@export
 
-PlotOPLS.Permutation<-function(mSetObj=NA, imgName, format="png", dpi=72, width=NA){
+PlotOPLS.Permutation<-function(mSetObj=NA, imgName, format="png", dpi=72, width=NA, hist_colors=c("#00FF00FF", "#FF0000EE")){
   
   mSetObj <- .get.mSet(mSetObj);
   
@@ -1744,7 +1751,10 @@ PlotOPLS.Permutation<-function(mSetObj=NA, imgName, format="png", dpi=72, width=
     pq <- paste("p = ", signif(p, digits=5), " (", better.qhits, "/", perm.num, ")", sep="");
   }
   
-  rng <- range(c(r.vec, q.vec, 1));
+  rng <- range(c(q.vec, 1));
+  if(rng[1]==rng[2]){
+    rng[1] <- rng[2] - 0.1
+  }
   
   imgName = paste(imgName, "dpi", dpi, ".", format, sep="");
   if(is.na(width)){
@@ -1760,21 +1770,31 @@ PlotOPLS.Permutation<-function(mSetObj=NA, imgName, format="png", dpi=72, width=
   par(mar=c(5,5,2,7));
   rhst <- hist(r.vec[-1], plot=FALSE);
   qhst <- hist(q.vec[-1], plot=FALSE);
-  h <- max(c(rhst$counts, qhst$counts))+1;
-  bin.size <- min(c(rhst$breaks[2]-rhst$breaks[1], qhst$breaks[2]-qhst$breaks[1]));
+  
+  bin.size <- qhst$breaks[2]-qhst$breaks[1];
+  bin.size <- min(c(bin.size, 0.1))
   rbins <- seq(min(rhst$breaks),max(rhst$breaks),bin.size);
   qbins <- seq(min(qhst$breaks),max(qhst$breaks),bin.size);
-  hist(r.vec[-1], xlim=rng, ylim=c(0, h), breaks=rbins, border=F, ylab="Frequency", xlab= 'Permutations', 
-       col=adjustcolor("lightblue", alpha=0.6), main="");
-  hist(q.vec[-1], add=TRUE,breaks=qbins, border=F, col=adjustcolor("mistyrose", alpha=0.6));
+  if(length(rbins)==1){
+    rbins <- c(rbins-0.1, 1)
+  }
+  if(length(qbins)==1){
+    qbins <- c(qbins-0.1, 1)
+  }
+
+  qhst2 <- hist(q.vec[-1], xlim=rng, breaks=qbins, plot=FALSE);
+  h <- max(c(qhst2$counts))+1;
+  hist(q.vec[-1], xlim=rng, breaks=qbins, border=F, ylab="Frequency", xlab= 'Permutations', 
+       col=hist_colors[1], main="");
+  # hist(q.vec[-1], add=TRUE,breaks=qbins, border=F, col=hist_colors[2]);
   
-  arrows(r.vec[1], h/3, r.vec[1], 0, length=0.1,angle=30,lwd=2);
-  text(r.vec[1], h/2.5, paste('R2Y:', r.vec[1], "\n", pr), xpd=TRUE);
+  # arrows(r.vec[1], h/3, r.vec[1], 0, length=0.1,angle=30,lwd=2);
+  # text(r.vec[1], h/2.5, paste('R2Y:', r.vec[1], "\n", pr), xpd=TRUE);
   
   arrows(q.vec[1], h/2, q.vec[1], 0, length=0.1,angle=30,lwd=2);
   text(q.vec[1], h/1.8, paste('Q2:', q.vec[1], "\n", pq), xpd=TRUE);
   
-  legend(1, h/3, legend = c("Perm R2Y", "Perm Q2"), pch=15, col=c("lightblue", "mistyrose"), xpd=T, bty="n");
+  # legend(1, h/3, legend = c("Perm R2Y", "Perm Q2"), pch=15, col=hist_colors, xpd=T, bty="n");
   
   dev.off();
   

@@ -318,7 +318,7 @@ Read.TextData <- function(mSetObj=NA, filePath, format="rowu", lbl.type="disc"){
         AddErrMsg(paste ("A total of", length(levels(as.factor(cls.lbl))), "groups found with", length(smpl.nms), "samples."));
         AddErrMsg("At least three replicates are required in each group!");
         AddErrMsg("Or maybe you forgot to specify the data format?");
-        return(0);
+        # return(0);
       }
      
       mSetObj$dataSet$orig.cls <- mSetObj$dataSet$cls <- as.factor(as.character(cls.lbl));

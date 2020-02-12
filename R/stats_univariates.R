@@ -754,7 +754,7 @@ parseFisher <- function(fisher, cut.off){
 #'License: GNU GPL (>= 2)
 #'@export
 #'
-ANOVA.Anal<-function(mSetObj=NA, nonpar=F, thresh=0.05, post.hoc="fisher", all_results=FALSE){
+ANOVA.Anal<-function(mSetObj=NA, nonpar=F, thresh=0.05, post.hoc="fisher", all_results=FALSE, thresh_multi=0.05){
 
   mSetObj <- .get.mSet(mSetObj);
   
@@ -828,12 +828,12 @@ ANOVA.Anal<-function(mSetObj=NA, nonpar=F, thresh=0.05, post.hoc="fisher", all_r
       cmp.res <- NULL;
       post.nm <- NULL;
       if(post.hoc=="tukey"){
-        tukey.res<-lapply(aov.imp, TukeyHSD, conf.level=1-thresh);
-        cmp.res <- unlist(lapply(tukey.res, parseTukey, cut.off=thresh));
+        tukey.res<-lapply(aov.imp, TukeyHSD, conf.level=1-thresh_multi);
+        cmp.res <- unlist(lapply(tukey.res, parseTukey, cut.off=thresh_multi));
         post.nm = "Tukey's HSD";
       }else{
-        fisher.res<-lapply(aov.imp, FisherLSD, thresh);
-        cmp.res <- unlist(lapply(fisher.res, parseFisher, cut.off=thresh));
+        fisher.res<-lapply(aov.imp, FisherLSD, thresh_multi);
+        cmp.res <- unlist(lapply(fisher.res, parseFisher, cut.off=thresh_multi));
         post.nm = "Fisher's LSD";
       }
       
